@@ -57,14 +57,23 @@ Skill 是自然语言指导，不是确定执行的程序。需要用真实任�
 ## 现有技能
 
 - [`code-review`](skills/code-review/SKILL.md)：设计优先，以一次变更为入口，只读检视 MindSpore Lite LLM 及受影响存量模块。输出“必须修改／建议修改／可选改进”，标明来源和确信程度；验证由提交者负责，不改代码、不发布评论。
+- [`code-taste`](skills/code-taste/SKILL.md)：写作期的代码品味，先定数据与所有权、错误模型、接口和性能假设，再动手；与 `code-review` 共用[设计品味目录](skills/code-taste/references/design-taste.md)，不复制第二份规则。
+- [`tech-writing`](skills/tech-writing/SKILL.md)：把笔记、代码、数据和论文整理成可发布的技术文章，按原理长文、复盘、性能记录、科普、设计文档、论文粗读/精读[选结构](skills/tech-writing/references/article-shapes.md)，证据分层、去 AI 味。
+- [`device-inference-accel`](skills/device-inference-accel/SKILL.md)：端侧 LLM/AIGC 推理加速工作流，界定指标、建可复现基线、剖析瓶颈、按代价排序并双验证；技术卡见[技术卡](skills/device-inference-accel/references/techniques.md)，基线分布与 roofline 下界用 `bench.py`、`roofline.py` 复跑。
 
 使用示例：“用 `skills/code-review/SKILL.md` 检视 MindSpore Lite LLM 的这次分支变更，以指定目标分支为基准，同时关注受影响的存量模块。已有验证材料随请求提供；缺少时请指出具体需要补充的用例与结果。”
 
 检视顺序为“需求与影响范围 → 整体设计 → 实现细节”。主技能只保留关键流程与标准，[专项清单](skills/code-review/references/checklists.md)按影响选择。清单吸收 llama.cpp 的设计、安全、模型适配、后端及接口检视方法，不移植其专属 API 或社区政策；有充分依据的设计问题即使尚无行为缺陷，也可以要求必须修改。
 
-[代码坏味道](skills/code-review/references/code-smells.md)参考覆盖散弹式修改、时间耦合、抽象泄漏、冗余状态等设计线索，每项给出识别信号、需核实的证据、合理例外与改进方向。坏味道不直接等于缺陷，也不自动要求重构。
+[设计品味目录](skills/code-taste/references/design-taste.md)由写作期与检视期共用，覆盖散弹式修改、时间耦合、抽象泄漏、冗余状态等线索，每项给出识别信号、需核实的证据、合理例外与改进方向。坏味道不直接等于缺陷，也不自动要求重构。
 
 `code-review` 尚未经过真实检视案例校准；格式校验和静态场景检查不代表实际检视效果已验证。
+
+`code-taste` 使用示例：“按 `skills/code-taste/SKILL.md` 为这个改动定数据结构和错误模型，再开始写。” 它与 `code-review` 共用同一份设计品味目录：写作期用它避免引入，检视期用它识别已有。
+
+`tech-writing` 使用示例：“用 `skills/tech-writing/SKILL.md` 把这次量化实验整理成一篇性能记录，先定主张和读者，再按骨架组织。” 技能要求区分事实、估算与观点，没有证据的结论标为待补。
+
+`device-inference-accel` 使用示例：“按 `skills/device-inference-accel/SKILL.md` 在 Kirin 上给这个模型建可复现基线，定位 bound 后再决定量化还是融合。” 构建与导出在容器内运行；拿不到真机时只交付有边界的估算与复现计划。`code-taste`、`tech-writing`、`device-inference-accel` 均尚未经真实任务校准。
 
 ## 仓库结构
 
@@ -74,7 +83,21 @@ skills/
     SKILL.md
     references/
       checklists.md
-      code-smells.md
+  code-taste/
+    SKILL.md
+    references/
+      design-taste.md
+  tech-writing/
+    SKILL.md
+    references/
+      article-shapes.md
+  device-inference-accel/
+    SKILL.md
+    references/
+      techniques.md
+    scripts/
+      bench.py
+      roofline.py
 scripts/
   validate_skills.py
 AGENTS.md
